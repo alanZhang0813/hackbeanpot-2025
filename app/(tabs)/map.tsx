@@ -3,12 +3,18 @@ import { StyleSheet, View, Platform, Button } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import fetch from 'node-fetch';
+import { Text } from 'react-native';
+// import fetch from 'node-fetch';
 
 type Coords = {
   latitude: number;
   longitude: number;
 };
+
+type NameResponse = {
+  display_name: string;
+  address: string;
+}
 
 export default function MapScreen() {
   const [coords, setCoords] = useState<Coords | null>(null);
@@ -37,34 +43,23 @@ export default function MapScreen() {
     text = `Lat: ${coords.latitude}, Lon: ${coords.longitude}`;
   }
 
-  // const fetchLocationName = async (coords: Coords) => {
-  //   const apiKey = '';
-  //   const lat = coords?.latitude;
-  //   const lng = coords?.longitude;
+  function isNameResponse(data: unknown): data is NameResponse {
+    return (
+      typeof data === 'object' &&
+      data !== null &&
+      'display_name' in data &&
+      typeof (data as NameResponse).display_name === 'string'
+    );
+  }
 
-  //   if (!lat || !lng) {
-  //     console.error('Invalid coordinates');
-  //     setLocName('Invalid coordinates');
-  //     return;
-  //   }
+  const fetchLocationName = async () => {
+    // const lat = coords.latitude;
+    // const lng = coords.longitude;
+    if (!coords) return;
 
-  //   const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
-
-  //   try {
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     setLocName(data.results[0]?.formatted_address || 'Location name not found');
-  //   } catch (error) {
-  //     console.error('Error fetching location name:', error);
-  //     setLocName('Error fetching location name');
-  //   }
-  // };
-
-  const fetchLocationName = async (coords: Coords) => {
-    const lat = coords?.latitude;
-    const lng = coords?.longitude;
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
-    if (!lat || !lng) {
+    const { latitude, longitude } = coords;
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+    if (!latitude || !longitude) {
       console.error('Invalid coordinates');
       setLocName('Invalid coordinates');
       return;
@@ -73,10 +68,14 @@ export default function MapScreen() {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      if (data) {
+      if (isNameResponse(data)) {
+        // console.log(data.display_name);
+        setLocName(data.display_name)
         return data.display_name || 'Location name not found';
+      } else {
+        throw new Error('Invalid API response');
       }
-      
+
     } catch (error) {
       console.error('Error fetching location name:', error);
       throw error;
@@ -85,8 +84,11 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
+      
       <ThemedText>{text}</ThemedText>
-
+      {locName ? (
+        <ThemedText style={{ fontSize: 20 }}>Location: {locName}</ThemedText>
+      ) : null}
       {(coords) && (<MapView
           style={styles.map}
           initialRegion={{
@@ -100,7 +102,8 @@ export default function MapScreen() {
         </MapView>
       )}
 
-      <Button title="Get Current Location" onPress={() => location} />
+      <Button title="Get Current Location" onPress={fetchLocationName} />
+      
     </View>
   );
 }

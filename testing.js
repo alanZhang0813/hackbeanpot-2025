@@ -2,7 +2,7 @@
 // node testing.js
 // delete later, file just for testing purposes
 
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 const fetchLocationName = async (lat, lng) => {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
   

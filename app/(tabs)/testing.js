@@ -1,7 +1,7 @@
 // npm install node-fetch
 // node test.js
 
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 
 const fetchLocationName = async (lat, lng) => {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;

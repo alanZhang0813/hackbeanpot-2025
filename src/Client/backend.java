@@ -5,8 +5,8 @@ public class backend {
         
     }
 
-    public String generatePlaylist(String city) {
-
+    public List<Song> generatePlaylist(String city) {
+        
     }
 
 
