@@ -15,6 +15,7 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'person.fill': 'person',
   'map' : 'map',
+  'gear.fill' : 'gear',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
