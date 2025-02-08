@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Platform } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
+import { MusicEmoji } from '@/components/MusicEmoji';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -16,38 +17,30 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Hello World!</ThemedText>
-        <HelloWave />
+        <ThemedText type="title">GeoBeats</ThemedText>
+        <MusicEmoji/>
       </ThemedView>
+
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type='subtitle'>Music to take with you</ThemedText>
+      </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText type="subtitle">Step 1: Track your location</ThemedText>
         <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
+          Enable location tracking or enter your current location
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
+        <ThemedText type="subtitle">Step 2: Configure</ThemedText>
         <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
+          Choose between popularity, origin, or puns
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <ThemedText type="subtitle">Step 3: Enjoy!</ThemedText>
         <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+          Listen to some of the tunes that are call these places home
         </ThemedText>
       </ThemedView>
     </ParallaxScrollView>
