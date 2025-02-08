@@ -15,19 +15,19 @@ const developers = [
   {
     name: "Jessica Luo",
     image: require('@/assets/images/geo-beats_logo2.png'),
-    github: "https://github.com/bobsmith",
-    linkedin: "https://linkedin.com/in/bobsmith",
+    github: "https://github.com/JLetsGitIt",
+    linkedin: "https://www.linkedin.com/in/jessica-luo-68b143232/",
   },
   {
     name: "Ben Tran",
     image: require('@/assets/images/geo-beats_logo2.png'),
-    github: "https://github.com/charliebrown",
-    linkedin: "https://linkedin.com/in/charliebrown",
+    github: "https://github.com/btran4924",
+    linkedin: "https://www.linkedin.com/in/benjaminvtran/",
   },
   {
     name: "Alex Vuong",
     image: require('@/assets/images/geo-beats_logo2.png'),
-    github: "https://github.com/dianalee",
+    github: "https://github.com/alvg123",
     linkedin: "https://linkedin.com/in/dianalee",
   },
 ];
@@ -52,8 +52,8 @@ export default function DevScreen() {
                 {dev.name}
               </ThemedText>
               <View style={styles.links}>
-                <ExternalLink href={dev.github}>GitHub</ExternalLink>
-                <ExternalLink href={dev.linkedin}>LinkedIn</ExternalLink>
+                <ExternalLink href={dev.github}>🐙</ExternalLink>
+                <ExternalLink href={dev.linkedin}>🔗</ExternalLink>
               </View>
             </ThemedView>
           ))}
@@ -98,11 +98,7 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: "bold",
     fontSize: 16,
-  },
-  role: {
-    fontSize: 14,
-    color: "gray",
-    marginBottom: 10,
+    color: 'black'
   },
   links: {
     flexDirection: "row",

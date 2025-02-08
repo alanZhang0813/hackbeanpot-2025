@@ -87,7 +87,7 @@ export default function MapScreen() {
 
   const sendLocNameToBackend = async (locName: string) => {
     try {
-      const response = await fetch('http://your-java-backend-url/api/location', {
+      const response = await fetch('http://localhost:8080/api/location', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
