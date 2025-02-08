@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.Map;
 
 
 class Song {
@@ -7,19 +9,25 @@ class Song {
     private final int popularity;
     private final int address;
 
+    public Song() {}
 
-    public Song(String name, String artist, String city, int popularity) {
+    public Song(String name,String artist,String city,int popularity, int address) {
         this.name = name;
         this.artist = artist;
         this.city = city;
         this.popularity = popularity;
+        this.address = address;
     }
 
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+          return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) { 
+            return false;
+        }
         Song song = (Song) obj;
         return popularity == song.popularity &&
                address == song.address &&

@@ -23,44 +23,45 @@ export default function SettingsScreen() {
         <ThemedText type="title">Settings</ThemedText>
       </ThemedView>
 
-      <Collapsible title="Spotify Login">
+      <Collapsible title="Spotify Integration">
         <ThemedText>
-          You can log into Spotify to personalize your experience. This allows the app to access your
-          currently playing song and provide music-related recommendations.
+          Connect your Spotify account to sync your music preferences and enhance your experience.
+          This feature allows the app to detect your currently playing song and generate recommendations based on your listening habits.
         </ThemedText>
         <ExternalLink href="https://developer.spotify.com/documentation/web-api/">
-          <ThemedText type="link">Learn more about Spotify integration</ThemedText>
+          <ThemedText type="link">Manage Spotify connections</ThemedText>
         </ExternalLink>
       </Collapsible>
 
-      <Collapsible title="Enable Location Tracking">
+      <Collapsible title="Location Tracking">
         <ThemedText>
-          Enabling location tracking allows the app to suggest experiences based on your current
-          position. This feature is optional but enhances personalization.
+          Enable location tracking to receive personalized suggestions based on your surroundings.
+          This feature helps improve recommendations and enhances real-time features.
         </ThemedText>
         <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/location/">
-          <ThemedText type="link">Learn more about location tracking</ThemedText>
+          <ThemedText type="link">Learn more about location settings</ThemedText>
         </ExternalLink>
       </Collapsible>
 
-      <Collapsible title="App Preferences (Coming Soon)">
+      <Collapsible title="App Preferences">
         <ThemedText>
-          Here you will be able to customize your experience with the following toggle settings:
+          Customize your experience by enabling or disabling the following settings:
         </ThemedText>
         <ThemedText>🔘 Dark Mode</ThemedText>
         <ThemedText>🔘 Music-based Recommendations</ThemedText>
         <ThemedText>🔘 Location-based Suggestions</ThemedText>
       </Collapsible>
 
-      <Collapsible title="Light and dark mode components">
+      <Collapsible title="Appearance">
         <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
+          Switch between light and dark mode based on your preference. The app automatically detects your system setting, but you can manually override it here.
         </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
+      </Collapsible>
+
+      <Collapsible title="Privacy & Data">
+        <ThemedText>
+          Your privacy matters. You can manage your data, clear saved preferences, and control how your information is used.
+        </ThemedText>
       </Collapsible>
     </ParallaxScrollView>
   );

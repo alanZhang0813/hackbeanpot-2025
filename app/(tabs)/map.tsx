@@ -3,7 +3,7 @@ import { StyleSheet, View, Platform, Button } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { Text } from 'react-native';
+import { Alert } from 'react-native';
 // import fetch from 'node-fetch';
 
 type Coords = {
@@ -13,7 +13,12 @@ type Coords = {
 
 type NameResponse = {
   display_name: string;
-  address: string;
+  address: {
+    city?: string;
+    town?: string;
+    village?: string;
+    country?: string;
+  };
 }
 
 export default function MapScreen() {
@@ -53,8 +58,6 @@ export default function MapScreen() {
   }
 
   const fetchLocationName = async () => {
-    // const lat = coords.latitude;
-    // const lng = coords.longitude;
     if (!coords) return;
 
     const { latitude, longitude } = coords;
@@ -68,9 +71,9 @@ export default function MapScreen() {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      if (isNameResponse(data)) {
+      if (isNameResponse(data) && data.address.city) {
         // console.log(data.display_name);
-        setLocName(data.display_name)
+        setLocName(data.address.city)
         return data.display_name || 'Location name not found';
       } else {
         throw new Error('Invalid API response');
@@ -79,6 +82,27 @@ export default function MapScreen() {
     } catch (error) {
       console.error('Error fetching location name:', error);
       throw error;
+    }
+  };
+
+  const sendLocNameToBackend = async (locName: string) => {
+    try {
+      const response = await fetch('http://your-java-backend-url/api/location', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ locCity : locName }),
+      });
+
+      if (response.ok) {
+        Alert.alert('Success', 'Location name sent to the backend!');
+      } else {
+        Alert.alert('Error', 'Failed to send location name to the backend.');
+      }
+    } catch (error) {
+      console.error('Error sending location name to backend:', error);
+      Alert.alert('Error', 'Failed to send location name to the backend.');
     }
   };
 
@@ -103,7 +127,7 @@ export default function MapScreen() {
       )}
 
       <Button title="Get Current Location" onPress={fetchLocationName} />
-      
+      {/* <Button title="Get New Playlist" onPress={} /> */}
     </View>
   );
 }

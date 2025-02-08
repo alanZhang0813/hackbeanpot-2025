@@ -2,17 +2,15 @@ package Server;
 
 import java.util.HashMap;
 import java.util.Map;
-import Server.API;
+
 
 public class Playlists {
     
-    private Map<String, String> playlists 
+    private Map<String, String> playlists;
 
     public Playlists(Map<String, String> playlists) {
-        
-
+        this.playlists = playlists;
     }
-
 
     private Map<String, String> parseJson(String json) {
         Map<String, String> map = new HashMap<>();
@@ -26,7 +24,6 @@ public class Playlists {
         }
         return map;
     }
-
-
+    
     
 }
