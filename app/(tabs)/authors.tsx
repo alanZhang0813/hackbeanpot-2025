@@ -34,10 +34,17 @@ const developers = [
 
 export default function DevScreen() {
   return (
-    <ParallaxScrollView headerImage={require('@/assets/images/geo-beats_logo2.png')} headerBackgroundColor={{
-          dark: "",
-          light: ""
-      }}>
+    <ParallaxScrollView
+      headerBackgroundColor={{
+        dark: "",
+        light: ""
+      }}
+    >
+      {/* Add an Image component for the header */}
+      <Image
+        source={require('@/assets/images/geo-beats_logo2.png')}
+        style={styles.headerImage}
+      />
       <ThemedView style={styles.container}>
         <ThemedText type="title">Meet the Developers</ThemedText>
         <ThemedText style={styles.subtitle}>The team behind this project.</ThemedText>
@@ -62,6 +69,11 @@ export default function DevScreen() {
 }
 
 const styles = StyleSheet.create({
+  headerImage: {
+    width: '100%',
+    height: 200, // Adjust the height as needed
+    resizeMode: 'contain', // Ensure the image fits within the container
+  },
   container: {
     padding: 20,
     alignItems: "center",
