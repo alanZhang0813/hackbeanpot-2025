@@ -52,7 +52,7 @@ export default function HomeScreen() {
             })
               .then((response) => response.json())
               .then((data) => {
-                sessionStorage.setItem("spotify_user_data", data);;
+                sessionStorage.setItem("spotify_user_id", data.id);;
                 setMe(data.display_name);
               })
               .catch((error) => console.error(" Error fetching user data:", error));
