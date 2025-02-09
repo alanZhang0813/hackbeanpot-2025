@@ -76,7 +76,7 @@ export class SpotifyAPI {
         // Filter the playlists to ensure they are not null
         const filtered = response.playlists.items.filter(isNotNull);
     
-        let songs = new Map<string, number>(); // Use string as the key
+        const songs = new Map<string, number>(); // Use string as the key
     
         for (let i = 0; i < filtered.length; i++) {
             // Ensure playlist tracks are not null or undefined
@@ -104,7 +104,7 @@ export class SpotifyAPI {
         }
     
         // Get top 20 of the most popular songs
-        let songOrder = new Map(Array.from(songs.entries()).sort((a, b) => b[1] - a[1]).slice(0, 20));
+        const songOrder = new Map(Array.from(songs.entries()).sort((a, b) => b[1] - a[1]).slice(0, 20));
         return songOrder;
     }
 }
