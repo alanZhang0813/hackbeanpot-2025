@@ -18,16 +18,21 @@ Each time you visit a new city, Geobeats curates a playlist of the most popular 
     npx expo start -w
    ```
 
-3. Sign into Spotify using your:
+3. On a different terminal instance, initialize connection:
+   ```bash
+    npx tsx ./backend/express.ts
+   ```
+
+4. Sign into Spotify using your:
 
    ```bash
     Username: spotify_Username
     Password: spotify_Password
    ```
 
-4. Select Set Location, then Select Create Playlist
+5. Select Set Location, then Select Create Playlist
 
-5. Select "Create a Playlist" and enjoy the vibes!
+6. Select "Create a Playlist" and enjoy the vibes!
 
 ### Its that simple! 
 
