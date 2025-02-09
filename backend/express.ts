@@ -1,13 +1,11 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import cors from 'cors';
 import { SpotifyAPI } from './api';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 const PORT = 5001;
 let api = new SpotifyAPI();
 

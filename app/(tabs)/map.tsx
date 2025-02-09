@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Platform, Button, FlatList, ScrollView } from 'react-native';
+import { StyleSheet, View, Platform, Button, FlatList, ScrollView, TextInput } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import * as Location from 'expo-location';
 import { Alert } from 'react-native';
@@ -42,7 +42,7 @@ export default function MapScreen() {
       let userLocation = await Location.getCurrentPositionAsync({});
       setCoords(userLocation.coords);
 
-      const user_data = sessionStorage.getItem("spotify_user_data");
+      let user_data = sessionStorage.getItem("spotify_user_data");
       if (user_data) {
         setUserId(user_data);
         console.log(user_data);
@@ -50,7 +50,7 @@ export default function MapScreen() {
         setUserId('');
       }
 
-      const spotify_token = sessionStorage.getItem("spotify_api_token");
+      let spotify_token = sessionStorage.getItem("spotify_api_token");
       if (spotify_token) {
         setSpotifyToken(spotify_token);
         console.log(spotifyToken);
@@ -149,11 +149,15 @@ export default function MapScreen() {
   };
 
   const exportToSpotify = async () => {
-    await createPlaylist();
-    await addSongs();
+    const newPlaylistId = await createPlaylist(); // Wait for playlist creation
+    if (newPlaylistId) {
+      await addSongs(newPlaylistId); // Pass playlistId explicitly
+    } else {
+      console.error("Failed to create playlist, skipping addSongs()");
+    }
   };
-
-  const createPlaylist = async () => {
+  
+  const createPlaylist = async (): Promise<string | null> => {
     console.log("User ID:", userId);
     try {
       const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
@@ -163,42 +167,50 @@ export default function MapScreen() {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ "name" : "GeoBeats", "description" : "", "public" : false })
-      })
-      if (response) {
+        body: JSON.stringify({ "name": "GeoBeats", "description": "", "public": false }),
+      });
+  
+      if (response.ok) {
         const data = await response.json();
         console.log("Playlist ID:", data.id);
-        setPlaylistId(data.id);
+        return data.id; // Return the playlist ID
+      } else {
+        console.error("Failed to create playlist. Response:", await response.text());
+        return null;
       }
     } catch (error) {
-      console.error('Error at the try:', error);
+      console.error('Error creating playlist:', error);
+      return null;
     }
-  }
-
-  const addSongs = async () => {
+  };
+  
+  const addSongs = async (playlistId: string) => {
     try {
       const uris = songIdList.map((songId) => `spotify:track:${songId}`);
       const requestBody = {
         uris: uris,
       };
-      console.log(requestBody);
+      console.log("Request Body:", requestBody);
+      console.log("Playlist ID:", playlistId);
+  
       const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${spotifyToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ requestBody })
-      })
-      // if (response) {
-      //   console.log("Success");
-      // } else {
-      //   console.error("An error occurred");
-      // }
+        body: JSON.stringify(requestBody), // Fix JSON structure
+      });
+  
+      if (response.ok) {
+        console.log("Successfully added songs!");
+      } else {
+        console.error("Failed to add songs. Response:", await response.text());
+      }
     } catch (error) {
-      console.error('Error at the try:', error);
+      console.error('Error adding songs:', error);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -207,7 +219,15 @@ export default function MapScreen() {
         <ThemedText style={{ fontSize: 20 }}>Location: {locName}</ThemedText>
       ) : null}
 
-      <Button title="Set Location" onPress={fetchLocationName} />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter location"
+        value={locName}
+        onChangeText={setLocName}
+      />
+      <Button title="Confirm Location" onPress={() => console.log("Confirmed location:", locName)} />
+
+      <Button title="Find Me" onPress={fetchLocationName} />
       <Button title="Get New Playlist" onPress={sendLocNameToBackend} />
 
       {/* Parallax Scroll View */}
@@ -230,6 +250,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'white',
+    color: 'white',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    width: '80%',
+    marginVertical: 10,
   },
   scrollContainer: {
     marginTop: 20,
