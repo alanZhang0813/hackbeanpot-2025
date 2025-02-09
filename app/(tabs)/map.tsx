@@ -167,7 +167,7 @@ export default function MapScreen() {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ "name": "GeoBeats", "description": "", "public": false }),
+        body: JSON.stringify({ "name": `GeoBeats ${locName}`, "description": "", "public": false }),
       });
  
       if (response.ok) {
