@@ -28,7 +28,7 @@ const developers = [
     name: "Alex Vuong",
     image: require('@/assets/images/geo-beats_logo2.png'),
     github: "https://github.com/alvg123",
-    linkedin: "https://linkedin.com/in/dianalee",
+    linkedin: "https://linkedin.com/in/alex-vuong-cs",
   },
 ];
 

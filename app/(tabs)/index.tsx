@@ -1,9 +1,9 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
+import { Image, StyleSheet, Platform, Button } from 'react-native';
 import { MusicEmoji } from '@/components/MusicEmoji';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+
 
 export default function HomeScreen() {
   return (
@@ -42,6 +42,7 @@ export default function HomeScreen() {
           Listen to some of the tunes that are call these places home
         </ThemedText>
       </ThemedView>
+      {/* <Button title="user-sign-in" onPress={spotifyConnect} /> */}
     </ParallaxScrollView>
   );
 }

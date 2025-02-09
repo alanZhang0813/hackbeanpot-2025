@@ -4,7 +4,6 @@ import { ThemedText } from '@/components/ThemedText';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Alert } from 'react-native';
-// import fetch from 'node-fetch';
 
 type Coords = {
   latitude: number;
@@ -85,24 +84,27 @@ export default function MapScreen() {
     }
   };
 
-  const sendLocNameToBackend = async (locName: string) => {
+  const sendLocNameToBackend = async () => {
+    console.log("Location:", locName);
     try {
-      const response = await fetch('http://localhost:8080/api/location', {
+      const response = await fetch('http://192.168.1.100/api/location', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ locCity : locName }),
+        body: JSON.stringify({ location : locName }),
       });
 
       if (response.ok) {
         Alert.alert('Success', 'Location name sent to the backend!');
+        console.log("Success!");
       } else {
         Alert.alert('Error', 'Failed to send location name to the backend.');
+        console.log("Failure!");
       }
     } catch (error) {
-      console.error('Error sending location name to backend:', error);
-      Alert.alert('Error', 'Failed to send location name to the backend.');
+      console.error('Error at the try:', error);
+      Alert.alert('Error', 'Failed at the catch block.');
     }
   };
 
@@ -126,8 +128,8 @@ export default function MapScreen() {
         </MapView>
       )}
 
-      <Button title="Get Current Location" onPress={fetchLocationName} />
-      {/* <Button title="Get New Playlist" onPress={} /> */}
+      <Button title="Set Location" onPress={fetchLocationName} />
+      <Button title="Get New Playlist" onPress={sendLocNameToBackend}/>
     </View>
   );
 }
