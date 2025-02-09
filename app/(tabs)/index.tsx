@@ -1,5 +1,7 @@
 import { Image, StyleSheet, Button, View, Text } from "react-native";
 import { useState } from "react";
+import { useEffect } from 'react';
+import * as Linking from 'expo-linking';
 import * as WebBrowser from "expo-web-browser";
 import { MusicEmoji } from "@/components/MusicEmoji";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -8,31 +10,58 @@ import { ThemedView } from "@/components/ThemedView";
 
 
 const client = "fd3d6f23a06b4bae9b6dc9bcf3794fe4";
-const REDIRECT_URI = "http://localhost:8081/"; // Generates a redirect URI for mobile
+const REDIRECT_URI = "http://localhost:8081/";
 const SCOPES = "user-read-private user-read-email playlist-modify-public playlist-modify-private";
 
 export default function HomeScreen() {
 
-  const [me, setMe] = useState<string | null>(null);
+  const [me, setMe] = useState('');
 
   const loginWithSpotify = async () => {
+    console.log(" loginWithSpotify() was called!");
+  
     const authUrl = `https://accounts.spotify.com/authorize?` +
       `client_id=${client}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${SCOPES}&show_dialog=true`;
+  
+    // Open a new window for authentication
+    const authWindow = window.open(authUrl, "_blank", "width=600,height=700");
+  
+    // Listen for token in the original window
+    const checkForToken = setInterval(() => {
+      try {
+        if (!authWindow || authWindow.closed) {
+          clearInterval(checkForToken);
+          console.log(" Auth window closed");
+          return;
+        }
+  
+        // Check if the new window's URL contains the access token
+        const url = authWindow.location.href;
+        if (url.includes("#access_token=")) {
+          const token = new URLSearchParams(url.split("#")[1]).get("access_token");
 
-    const result = await WebBrowser.openAuthSessionAsync(authUrl, REDIRECT_URI);
-
-    if (result.type === "success") {
-      const token = new URLSearchParams(result.url.split("#")[1]).get("access_token");
-
-      if (token) {
-        fetch("https://api.spotify.com/v1/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-          .then((response) => response.json())
-          .then((data) => setMe(data.display_name))
-          .catch((error) => console.error("Error fetching user data:", error));
+  
+          if (token) {
+            authWindow.close(); // Close the login window
+            clearInterval(checkForToken);
+            sessionStorage.setItem("spotify_api_token", token);
+  
+            // Fetch user data with the token
+            fetch("https://api.spotify.com/v1/me", {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                sessionStorage.setItem("spotify_user_data", data);;
+                setMe(data.display_name);
+              })
+              .catch((error) => console.error(" Error fetching user data:", error));
+          }
+        }
+      } catch (err) {
+        console.error(err);
       }
-    }
+    }, 1000);
   };
 
   return (
@@ -72,7 +101,7 @@ export default function HomeScreen() {
         </ThemedText>
       </ThemedView>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      {me ? <Text>{me}</Text> : <Button title="Login with Spotify" onPress={loginWithSpotify} />}
+      {me ? <Text style={styles.greetingText}>{`Hi ${me}! ready to go on a road trip? 🚗⛰️`}</Text> : <Button title="Login with Spotify" onPress={loginWithSpotify} />}
     </View>
     </ParallaxScrollView>
   );
@@ -94,6 +123,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  greetingText: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: 'bold',
   },
 });
 

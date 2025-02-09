@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Platform, Button, FlatList, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-// import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Alert } from 'react-native';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 type Coords = {
   latitude: number;
   longitude: number;
-};
-
-type Playlist = {
-  id: string;
-  name: string;
-  popularity: number;
 };
 
 type NameResponse = {
@@ -31,6 +23,11 @@ export default function MapScreen() {
   const [coords, setCoords] = useState<Coords | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [locName, setLocName] = useState('');
+
+  const [userId, setUserId] = useState(''); //The user's ID for exporting the playlist
+  const [playlistId, setPlaylistId] = useState('');
+
+  const [songIdList, setSongIdList] = useState<string[]>([]);
   const [songList, setSongList] = useState<string[]>([]); // For storing song names
 
   useEffect(() => {
@@ -43,6 +40,14 @@ export default function MapScreen() {
 
       let userLocation = await Location.getCurrentPositionAsync({});
       setCoords(userLocation.coords);
+
+      const token = sessionStorage.getItem("spotify_api_token");
+      if (token) {
+        setUserId(token);
+        console.log(token);
+      } else {
+        setUserId('');
+      }
     };
 
     getLocation();
@@ -108,16 +113,26 @@ export default function MapScreen() {
       if (data.success) {
         const playlistsObject = data.playlists;
 
-        const playlistsMap = new Map(
+        const songsNameMap = new Map(
           Object.entries(playlistsObject).map(([key, value]) => {
-            const songName = key.split(',')[1]; // Extract song name from the key
+            const songName = key.split(',')[1].slice(0, -1); // Extract song name from the key
             return [songName, value]; // Store it as a key-value pair
           })
         );
 
+        const songsIdMap = new Map(
+          Object.entries(playlistsObject).map(([key, value]) => {
+            const songId = key.split(',')[0].slice(1); // Extract song name from the key
+            // console.log(songId);
+            return [songId, value]; // Store it as a key-value pair
+          })
+        );
+
         // Convert Map to array of song names to display
-        const songNames = Array.from(playlistsMap.keys());
+        const songNames = Array.from(songsNameMap.keys());
+        const songIds = Array.from(songsIdMap.keys());
         setSongList(songNames); // Update the song list
+        setSongIdList(songIds);
       }
 
     } catch (error) {
@@ -125,6 +140,54 @@ export default function MapScreen() {
       Alert.alert('Error', 'Failed at the catch block.');
     }
   };
+
+  const exportToSpotify = async () => {
+    await createPlaylist();
+    await addSongs();
+  };
+
+  const createPlaylist = async () => {
+    try {
+      const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+        method: "POST",
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "name" : "GeoBeats", "description" : "", "public" : false })
+      })
+      if (response) {
+        const data = await response.json();
+        setPlaylistId(data.id);
+      }
+    } catch (error) {
+      console.error('Error at the try:', error);
+    }
+  }
+
+  const addSongs = async () => {
+    try {
+      const uris = songIdList.slice(0, 100).map((songId) => `spotify:track:${songId}`);
+      const requestBody = {
+        uris: uris,
+      };
+      const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        method: "POST",
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ requestBody })
+      })
+      if (response) {
+        console.log("Success");
+      } else {
+        console.error("An error occurred");
+      }
+    } catch (error) {
+      console.error('Error at the try:', error);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -144,6 +207,8 @@ export default function MapScreen() {
           </View>
         ))}
       </ScrollView>
+
+      {songList.length != 0 && <Button title="Export to Spotify" onPress={exportToSpotify} />}
     </View>
   );
 }

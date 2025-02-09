@@ -47,7 +47,7 @@ export default function AuthorsScreen() {
       {/* Developer 3 */}
       <ThemedView style={styles.authorContainer}>
         <ThemedText type="title">Ben Tran</ThemedText>
-        <ThemedText type="subtitle">Backend Developer</ThemedText>
+        <ThemedText type="subtitle">4th-Year CS Major</ThemedText>
         <TouchableOpacity onPress={() => openLink('https://www.linkedin.com/in/benjaminvtran/')}>
           <ThemedText type="subtitle">LinkedIn</ThemedText>
         </TouchableOpacity>

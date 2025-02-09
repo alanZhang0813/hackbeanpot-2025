@@ -14,7 +14,7 @@ const MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'map' : 'map',
-  'gear.fill' : 'gear',
+  'gear' : 'settings-suggest',
   'music.note.list' : 'music-note',
   'user' : 'use'
 } as Partial<
