@@ -107,7 +107,7 @@ export default function MapScreen() {
   const sendLocNameToBackend = async () => {
     console.log("Location:", locName);
     try {
-      const response = await fetch('http://localhost:5000/api/location', {
+      const response = await fetch('http://localhost:5001/api/location', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -167,6 +167,7 @@ export default function MapScreen() {
       })
       if (response) {
         const data = await response.json();
+        console.log("Playlist ID:", data.id);
         setPlaylistId(data.id);
       }
     } catch (error) {
