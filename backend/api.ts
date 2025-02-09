@@ -68,15 +68,15 @@ export class SpotifyAPI {
     }
 
     public async organize(args: string, api: SpotifyAPI): Promise<Map<string, number>> {
-        const response = await api.scrapePlaylists(args);
+        let response = await api.scrapePlaylists(args);
     
         // Helper function to check for null values
         const isNotNull = <T extends unknown>(item: T | null): item is T => item !== null;
     
         // Filter the playlists to ensure they are not null
-        const filtered = response.playlists.items.filter(isNotNull);
+        let filtered = response.playlists.items.filter(isNotNull);
     
-        const songs = new Map<string, number>(); // Use string as the key
+        let songs = new Map<string, number>(); // Use string as the key
     
         for (let i = 0; i < filtered.length; i++) {
             // Ensure playlist tracks are not null or undefined
@@ -104,7 +104,7 @@ export class SpotifyAPI {
         }
     
         // Get top 20 of the most popular songs
-        const songOrder = new Map(Array.from(songs.entries()).sort((a, b) => b[1] - a[1]).slice(0, 20));
+        let songOrder = new Map(Array.from(songs.entries()).sort((a, b) => b[1] - a[1]).slice(0, 20));
         return songOrder;
     }
 }

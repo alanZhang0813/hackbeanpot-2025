@@ -9,11 +9,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 const PORT = 5000;
-const api = new SpotifyAPI();
+let api = new SpotifyAPI();
 
 app.post('/api/location', async function (req: Request, res: Response) {
     try {
-        const { location } = req.body;
+        let { location } = req.body;
 
         if (!location) {
             res.status(400).json({ error: 'Location is required' });
@@ -22,7 +22,7 @@ app.post('/api/location', async function (req: Request, res: Response) {
         console.log('Received location:', location);
 
         // Fetch playlists from Spotify
-        const playlists = await api.organize(location, api);
+        let playlists = await api.organize(location, api);
 
         if (playlists) {
             res.json({ success: true, playlists: playlists });
