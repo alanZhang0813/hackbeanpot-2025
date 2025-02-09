@@ -42,7 +42,7 @@ export default function MapScreen() {
       let userLocation = await Location.getCurrentPositionAsync({});
       setCoords(userLocation.coords);
 
-      const user_data = sessionStorage.getItem("spotify_user_id");
+      const user_data = sessionStorage.getItem("spotify_user_data");
       if (user_data) {
         setUserId(user_data);
         console.log(user_data);
@@ -149,15 +149,11 @@ export default function MapScreen() {
   };
 
   const exportToSpotify = async () => {
-    const newPlaylistId = await createPlaylist(); // Wait for playlist creation
-    if (newPlaylistId) {
-      await addSongs(newPlaylistId); // Pass playlistId explicitly
-    } else {
-      console.error("Failed to create playlist, skipping addSongs()");
-    }
+    await createPlaylist();
+    await addSongs();
   };
- 
-  const createPlaylist = async (): Promise<string | null> => {
+
+  const createPlaylist = async () => {
     console.log("User ID:", userId);
     try {
       const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
@@ -167,105 +163,42 @@ export default function MapScreen() {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ "name": "GeoBeats", "description": "", "public": false }),
-      });
- 
-      if (response.ok) {
+        body: JSON.stringify({ "name" : "GeoBeats", "description" : "", "public" : false })
+      })
+      if (response) {
         const data = await response.json();
         console.log("Playlist ID:", data.id);
-        return data.id; // Return the playlist ID
-      } else {
-        console.error("Failed to create playlist. Response:", await response.text());
-        return null;
+        setPlaylistId(data.id);
       }
     } catch (error) {
-      console.error('Error creating playlist:', error);
-      return null;
+      console.error('Error at the try:', error);
     }
-  };
- 
-  const addSongs = async (playlistId: string) => {
+  }
+
+  const addSongs = async () => {
     try {
       const uris = songIdList.map((songId) => `spotify:track:${songId}`);
       const requestBody = {
         uris: uris,
       };
-      console.log("Request Body:", requestBody);
-      console.log("Playlist ID:", playlistId);
- 
+      console.log(requestBody);
       const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${spotifyToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody), // Fix JSON structure
-      });
- 
-      if (response.ok) {
-        console.log("Successfully added songs!");
-      } else {
-        console.error("Failed to add songs. Response:", await response.text());
-      }
+        body: JSON.stringify({ requestBody })
+      })
+      // if (response) {
+      //   console.log("Success");
+      // } else {
+      //   console.error("An error occurred");
+      // }
     } catch (error) {
-      console.error('Error adding songs:', error);
+      console.error('Error at the try:', error);
     }
-  };
-
-  // const exportToSpotify = async () => {
-  //   // await createPlaylist();
-  //   // await addSongs();
-  //   console.log("User ID:", userId);
-  //   try {
-  //     const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
-  //       method: "POST",
-  //       headers: {
-  //         'Authorization': `Bearer ${spotifyToken}`,
-  //         'Accept': 'application/json',
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ "name" : "GeoBeats", "description" : "", "public" : false })
-  //     })
-  //     if (response) {
-  //       const data = await response.json();
-  //       console.log("Playlist ID:", data.id);
-  //       setPlaylistId(data.id);
-  //       console.log(playlistId);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error at the try:', error);
-  //   }
-  //   try {
-  //     const uris = songIdList.map((songId) => `spotify:track:${songId}`);
-  //     const requestBody = {
-  //       uris: uris,
-  //     };
-  //     console.log(playlistId);
-  //     const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-  //       method: "POST",
-  //       headers: {
-  //         'Authorization': `Bearer ${spotifyToken}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(requestBody)
-  //     })
-  //     // if (response) {
-  //     //   console.log("Success");
-  //     // } else {
-  //     //   console.error("An error occurred");
-  //     // }
-  //   } catch (error) {
-  //     console.error('Error at the try:', error);
-  //   }
-  // };
-
-  // const createPlaylist = async () => {
-    
-  // }
-
-  // const addSongs = async () => {
-    
-  // }
+  }
 
   return (
     <View style={styles.container}>
