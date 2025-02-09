@@ -24,8 +24,9 @@ Each time you visit a new city, Geobeats curates a playlist of the most popular 
    ```
 
 4. Once the web browser initializes, go to the "Home" tab, and sign in with your:
-   ```username: Spotify_username
+   ```username: Spotify_username\n
       password: Spotify_password```
+>>>>>>> parent of 9f709f5 (README update V3)
 
 5. Head over the the Maps tab, select either "Input Location" or "Find Me", and then select "Generate Playlist".
 
