@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Platform, Button } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import MapView, { Marker } from 'react-native-maps';
+// import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Alert } from 'react-native';
 
@@ -87,9 +87,10 @@ export default function MapScreen() {
   const sendLocNameToBackend = async () => {
     console.log("Location:", locName);
     try {
-      const response = await fetch('http://192.168.1.100/api/location', {
+      const response = await fetch('http://localhost:5000/api/location', {
         method: 'POST',
         headers: {
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ location : locName }),
@@ -115,7 +116,7 @@ export default function MapScreen() {
       {locName ? (
         <ThemedText style={{ fontSize: 20 }}>Location: {locName}</ThemedText>
       ) : null}
-      {(coords) && (<MapView
+      {/* {(coords) && (<MapView
           style={styles.map}
           initialRegion={{
             latitude: coords.latitude,
@@ -126,7 +127,7 @@ export default function MapScreen() {
         >
           <Marker coordinate={{ latitude: coords.latitude, longitude: coords.longitude }} />
         </MapView>
-      )}
+      )} */}
 
       <Button title="Set Location" onPress={fetchLocationName} />
       <Button title="Get New Playlist" onPress={sendLocNameToBackend}/>

@@ -40,9 +40,7 @@ export default function DevScreen() {
       }}>
       <ThemedView style={styles.container}>
         <ThemedText type="title">Meet the Developers</ThemedText>
-        <ThemedText style={styles.subtitle}>
-          The team behind this project.
-        </ThemedText>
+        <ThemedText style={styles.subtitle}>The team behind this project.</ThemedText>
 
         <View style={styles.profileContainer}>
           {developers.map((dev, index) => (

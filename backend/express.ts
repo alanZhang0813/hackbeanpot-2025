@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-const PORT = 443;
+const PORT = 5000;
 // const api = new SpotifyAPI();
 
 app.post('/api/location', async function (req: Request, res: Response) {
