@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Platform, Button } from 'react-native';
+import { StyleSheet, View, Platform, Button, FlatList, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 // import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Alert } from 'react-native';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 type Coords = {
   latitude: number;
   longitude: number;
+};
+
+type Playlist = {
+  id: string;
+  name: string;
+  popularity: number;
 };
 
 type NameResponse = {
@@ -24,6 +31,7 @@ export default function MapScreen() {
   const [coords, setCoords] = useState<Coords | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [locName, setLocName] = useState('');
+  const [songList, setSongList] = useState<string[]>([]); // For storing song names
 
   useEffect(() => {
     const getLocation = async () => {
@@ -96,13 +104,22 @@ export default function MapScreen() {
         body: JSON.stringify({ location : locName }),
       });
 
-      if (response.ok) {
-        Alert.alert('Success', 'Location name sent to the backend!');
-        console.log("Success!");
-      } else {
-        Alert.alert('Error', 'Failed to send location name to the backend.');
-        console.log("Failure!");
+      const data = await response.json();
+      if (data.success) {
+        const playlistsObject = data.playlists;
+
+        const playlistsMap = new Map(
+          Object.entries(playlistsObject).map(([key, value]) => {
+            const songName = key.split(',')[1]; // Extract song name from the key
+            return [songName, value]; // Store it as a key-value pair
+          })
+        );
+
+        // Convert Map to array of song names to display
+        const songNames = Array.from(playlistsMap.keys());
+        setSongList(songNames); // Update the song list
       }
+
     } catch (error) {
       console.error('Error at the try:', error);
       Alert.alert('Error', 'Failed at the catch block.');
@@ -111,26 +128,22 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
-      
       <ThemedText>{text}</ThemedText>
       {locName ? (
         <ThemedText style={{ fontSize: 20 }}>Location: {locName}</ThemedText>
       ) : null}
-      {/* {(coords) && (<MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          <Marker coordinate={{ latitude: coords.latitude, longitude: coords.longitude }} />
-        </MapView>
-      )} */}
 
       <Button title="Set Location" onPress={fetchLocationName} />
-      <Button title="Get New Playlist" onPress={sendLocNameToBackend}/>
+      <Button title="Get New Playlist" onPress={sendLocNameToBackend} />
+
+      {/* Parallax Scroll View */}
+      <ScrollView style={styles.scrollContainer}>
+        {songList.map((song, index) => (
+          <View key={index} style={styles.songItem}>
+            <ThemedText style={styles.songName}>{song}</ThemedText>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -140,13 +153,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
-  map: {
+  scrollContainer: {
+    marginTop: 20,
     width: '100%',
-    height: 400,
+  },
+  songItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  songName: {
+    fontSize: 18,
   },
 });
-
-function async(latitude: number | undefined, longitude: number | undefined) {
-  throw new Error('Function not implemented.');
-}

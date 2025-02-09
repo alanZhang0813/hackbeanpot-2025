@@ -23,9 +23,12 @@ app.post('/api/location', async function (req: Request, res: Response) {
 
         // Fetch playlists from Spotify
         let playlists = await api.organize(location, api);
+        const serializedPlaylists = Object.fromEntries(
+            Array.from(playlists.entries()).map(([key, value]) => [JSON.stringify(key), value])
+        );
 
-        if (playlists) {
-            res.json({ success: true, playlists: playlists });
+        if (serializedPlaylists) {
+            res.json({ success: true, playlists: serializedPlaylists });
             console.log(playlists);
         } else {
             res.status(500).json({ error: 'Failed to fetch playlists' });
