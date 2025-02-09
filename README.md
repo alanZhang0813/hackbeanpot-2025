@@ -25,7 +25,7 @@ Each time you visit a new city, Geobeats curates a playlist of the most popular 
 
 4. Once the web browser initializes, go to the "Home" tab, and sign in with your:
    ```bash
-   username: Spotify_username\n
+   username: Spotify_username
    password: Spotify_password
    ```
 
