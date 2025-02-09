@@ -15,8 +15,19 @@ Each time you visit a new city, Geobeats curates a playlist of the most popular 
 2. Start the app:
 
    ```bash
-    npx expo start
+    npx expo start -w
    ```
+
+3. Sign into Spotify using your:
+
+   ```bash
+    Username: spotify_Username
+    Password: spotify_Password
+   ```
+
+4. Select Set Location, then Select Create Playlist
+
+5. Select "Create a Playlist" and enjoy the vibes!
 
 ### Its that simple! 
 
