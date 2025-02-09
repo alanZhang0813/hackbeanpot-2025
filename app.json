@@ -11,16 +11,17 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-      "NSAppTransportSecurity": { 
-        "NSAllowsArbitraryLoads": true 
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
       }
-    }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.geobeats"
     },
     "web": {
       "bundler": "metro",
