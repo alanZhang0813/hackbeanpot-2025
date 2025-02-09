@@ -25,6 +25,7 @@ export default function MapScreen() {
   const [locName, setLocName] = useState('');
 
   const [userId, setUserId] = useState(''); //The user's ID for exporting the playlist
+  const [spotifyToken, setSpotifyToken] = useState('');
   const [playlistId, setPlaylistId] = useState('');
 
   const [songIdList, setSongIdList] = useState<string[]>([]);
@@ -41,12 +42,18 @@ export default function MapScreen() {
       let userLocation = await Location.getCurrentPositionAsync({});
       setCoords(userLocation.coords);
 
-      const token = sessionStorage.getItem("spotify_api_token");
-      if (token) {
-        setUserId(token);
-        console.log(token);
+      const user_data = sessionStorage.getItem("spotify_user_data");
+      if (user_data) {
+        setUserId(user_data);
+        console.log(user_data);
       } else {
         setUserId('');
+      }
+
+      const spotify_token = sessionStorage.getItem("spotify_api_token");
+      if (spotify_token) {
+        setSpotifyToken(spotify_token);
+        console.log(spotifyToken);
       }
     };
 
@@ -147,11 +154,13 @@ export default function MapScreen() {
   };
 
   const createPlaylist = async () => {
+    console.log("User ID:", userId);
     try {
       const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
         method: "POST",
         headers: {
-          Accept: 'application/json',
+          'Authorization': `Bearer ${spotifyToken}`,
+          'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ "name" : "GeoBeats", "description" : "", "public" : false })
@@ -167,23 +176,24 @@ export default function MapScreen() {
 
   const addSongs = async () => {
     try {
-      const uris = songIdList.slice(0, 100).map((songId) => `spotify:track:${songId}`);
+      const uris = songIdList.map((songId) => `spotify:track:${songId}`);
       const requestBody = {
         uris: uris,
       };
+      console.log(requestBody);
       const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         method: "POST",
         headers: {
-          Accept: 'application/json',
+          'Authorization': `Bearer ${spotifyToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ requestBody })
       })
-      if (response) {
-        console.log("Success");
-      } else {
-        console.error("An error occurred");
-      }
+      // if (response) {
+      //   console.log("Success");
+      // } else {
+      //   console.error("An error occurred");
+      // }
     } catch (error) {
       console.error('Error at the try:', error);
     }
